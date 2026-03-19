@@ -5,6 +5,8 @@ memory: 8192
 containers:
   - name: "sev-probe"
     image: "ghcr.io/eidola-ai/tinfoil-sev-test/sev-probe@sha256:b9d95b48ec36d66b9c48c02cd2d432edc1c32c9580860feef18c759370885aaf"
+    devices:
+      - /dev/sev-guest
     env:
       - PORT: "8080"
 
