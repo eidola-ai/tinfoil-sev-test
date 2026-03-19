@@ -132,24 +132,36 @@ fn probe() -> String {
     report
 }
 
+fn handle(mut stream: std::net::TcpStream, port: &str) {
+    let mut buf = [0u8; 4096];
+    let _ = stream.peek(&mut buf);
+    let _ = Read::read(&mut stream, &mut buf);
+
+    let body = format!("[served from :{port}]\n\n{}", probe());
+    let response = format!(
+        "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+        body.len(),
+        body
+    );
+    let _ = stream.write_all(response.as_bytes());
+}
+
 fn main() {
     let port = std::env::var("PORT").unwrap_or_else(|_| "8080".to_string());
     let listener = TcpListener::bind(format!("0.0.0.0:{port}")).unwrap();
     eprintln!("sev-probe listening on :{port}");
 
-    for stream in listener.incoming().flatten() {
-        let mut buf = [0u8; 4096];
-        let _ = stream.peek(&mut buf); // consume the request
-        let mut stream = stream;
-        let _ = Read::read(&mut stream, &mut buf);
+    let extra = TcpListener::bind("0.0.0.0:8081").unwrap();
+    eprintln!("sev-probe also listening on :8081");
 
-        let body = probe();
-        let response = format!(
-            "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
-            body.len(),
-            body
-        );
-        let _ = stream.write_all(response.as_bytes());
+    std::thread::spawn(move || {
+        for stream in extra.incoming().flatten() {
+            handle(stream, "8081");
+        }
+    });
+
+    for stream in listener.incoming().flatten() {
+        handle(stream, &port);
     }
 }
 
