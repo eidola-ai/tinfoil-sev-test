@@ -9,6 +9,7 @@ containers:
       - /dev/sev-guest
     env:
       - PORT: "8080"
+    network_mode: "host"
 
 shim:
   upstream-port: 8080
