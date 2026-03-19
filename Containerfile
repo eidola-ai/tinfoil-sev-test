@@ -7,7 +7,7 @@ ENV RUSTFLAGS="--remap-path-prefix /src=/"
 RUN cargo build --release --locked
 
 FROM debian:bookworm-slim@sha256:8af0e5095f9964007f5ebd11191dfe52dcb51bf3afa2c07f055fc5451b78ba0e
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /src/target/release/sev-probe /usr/local/bin/
 EXPOSE 8080
 CMD ["sev-probe"]
