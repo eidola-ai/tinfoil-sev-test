@@ -1,0 +1,14 @@
+cvm-version: 0.7.3
+cpus: 2
+memory: 8192
+
+containers:
+  - name: "sev-probe"
+    image: "<YOUR_REGISTRY>/sev-probe:v0.0.1@sha256:<DIGEST>"
+    env:
+      - PORT: "8080"
+
+shim:
+  upstream-port: 8080
+  paths:
+    - /*

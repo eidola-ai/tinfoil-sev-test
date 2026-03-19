@@ -1,0 +1,8 @@
+[package]
+name = "sev-probe"
+version = "0.0.1"
+edition = "2021"
+
+[profile.release]
+strip = true
+debug = 0
