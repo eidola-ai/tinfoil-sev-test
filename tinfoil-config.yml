@@ -4,7 +4,7 @@ memory: 8192
 
 containers:
   - name: "sev-probe"
-    image: "ghcr.io/eidola-ai/tinfoil-sev-test/sev-probe@sha256:sha256:67e764b5691503c6cc5abb197784e2b592cd75acf8fe038b316a2de434dbbfed"
+    image: "ghcr.io/eidola-ai/tinfoil-sev-test/sev-probe@sha256:67e764b5691503c6cc5abb197784e2b592cd75acf8fe038b316a2de434dbbfed"
     env:
       - PORT: "8080"
 
